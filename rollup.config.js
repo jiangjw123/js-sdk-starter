@@ -8,7 +8,9 @@ import json from './package.json'
 import commonjs from 'rollup-plugin-commonjs'
 import resolve from 'rollup-plugin-node-resolve'
 import postcss from 'rollup-plugin-postcss'
+import alias from '@rollup/plugin-alias'
 import pkg from './package.json'
+import path from 'path'
 
 const fs = require('fs');
 
@@ -54,20 +56,26 @@ export default [{
     sourcemap: true,
   },
   plugins: [
-    postcss(),
-    resolve(),
-    eslint({
+    alias({ // 配置路径别名
+      entries: [
+        { find: '@', replacement: path.resolve(__dirname, './src') },
+        { find: 'common', replacement: path.resolve(__dirname, './src/common')}
+      ]
+    }),
+    postcss(), // 处理sdk样式
+    resolve(), // 允许加载在node_modules中的第三方模块
+    eslint({ // 配置eslint规则
       throwOnError: true,
       throwOnWarning: true,
       include: ['src/**'],
       exclude: ['node_modules/**']
     }),
-    babel({
+    babel({ // 配置babel打包
       exclude: 'node_modules/**', // 防止打包node_modules下的文件
       runtimeHelpers: true,       // 使plugin-transform-runtime生效
     }),
     commonjs(),
-    (process.env.NODE_ENV === 'production' && terser()),
+    (process.env.NODE_ENV === 'production' && terser()), // 压缩
     replace({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'dev')
     })
@@ -81,6 +89,7 @@ export default [{
     { file: `./dist/${libraryName}-${json.version}-es.js`, format: 'es', sourcemap: true, }
   ],
   plugins: [
+    postcss(), // 处理sdk样式
     babel({
       exclude: 'node_modules/**', // 防止打包node_modules下的文件
       runtimeHelpers: true,       // 使plugin-transform-runtime生效

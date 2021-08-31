@@ -1,3 +1,5 @@
+import { add } from 'common/tool.js'
+import './style/index.css'
 function tracelog (target, name, descriptor) {
   var oldValue = descriptor.value;
   descriptor.value = function () {
@@ -20,7 +22,8 @@ function tracelog (target, name, descriptor) {
 
   return descriptor;
 }
-
+add()
+console.log(1111)
 class Demo {
   @tracelog
   getDemo () {
