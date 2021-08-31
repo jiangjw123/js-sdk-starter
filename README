@@ -1,0 +1,15 @@
+# js-sdk-starter
+
+一个用于快速创建 JavaScript sdk的模板脚手架，使用 Rollup 构建.
+
+## 快速开始
+
+```
+cd js-lib-starter
+
+yarn install             # 安装依赖
+
+yarn build               # 构建发布文件
+
+yarn dev                 # 启动demo
+```
